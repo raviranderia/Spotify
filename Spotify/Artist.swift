@@ -11,7 +11,7 @@ import UIKit
 
 struct Artist {
     let name : String
-    let rating : String
+    let rating : Int
     var artistImage : [UIImage]?
     var imageURLs : [URL]?
     
@@ -24,7 +24,7 @@ struct Artist {
         let artistName = artistDictionary["name"] as! String
         self.name = artistName
         
-        let artistRating = artistDictionary["popularity"] as! String
+        let artistRating = artistDictionary["popularity"] as! Int
         self.rating = artistRating
         
         if let artistImageURLs = artistDictionary["images"] as? [[String:AnyObject]] {

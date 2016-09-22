@@ -8,11 +8,11 @@
 
 import UIKit
 
-private class SASearchViewController: UIViewController, UITableViewDelegate, UITableViewDataSource, SASearchViewModelDelegate {
+final class SASearchViewController: UIViewController, UITableViewDelegate, UITableViewDataSource, SASearchViewModelDelegate {
     
     @IBOutlet weak var artistResultTableView: UITableView!
     
-    fileprivate var saSearchViewModel : SASearchViewModel!
+    var saSearchViewModel : SASearchViewModel!
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -21,14 +21,18 @@ private class SASearchViewController: UIViewController, UITableViewDelegate, UIT
     }
     
     @IBAction func dummySearchAction(_ sender: UIBarButtonItem) {
-        saSearchViewModel.startSearch(name: "Muse") { (success) in
-            if success {
-                self.artistResultTableView.reloadData()
+        
+        DispatchQueue.global().async {
+            self.saSearchViewModel.startSearch(name: "Muse") { (success) in
+                if success {
+                    DispatchQueue.main.async {
+                        self.artistResultTableView.reloadData()
+                    }
+                }
+                else{
+                    print("could not search")
+                }
             }
-            else{
-                print("could not search")
-            }
-            
         }
     }
     
@@ -38,7 +42,7 @@ private class SASearchViewController: UIViewController, UITableViewDelegate, UIT
     }
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return 1
+        return saSearchViewModel.searchResults.count
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {

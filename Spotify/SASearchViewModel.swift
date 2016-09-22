@@ -55,7 +55,7 @@ class SASearchViewModel {
                 completion(nil,error)
             }
             if let urlRequest = url {
-                let networkOperation  = NetworkOperation(url: urlRequest)
+                let networkOperation  = NetworkOperation(url: urlRequest as URL)
                 requestManager = RequestManager(networkHelper: networkOperation)
                 requestManager.getArtists() { (artistArray, error) in
                     if error != nil {
@@ -63,7 +63,6 @@ class SASearchViewModel {
                     }
                     else{
                         completion(artistArray,nil)
-                        print("could not load artists for some reason")
                     }
                 }
             }
@@ -77,7 +76,7 @@ class SASearchViewModel {
     func cellForRowAtIndexPath(_ cell : ArtistTableViewCell,indexPath : IndexPath) -> UITableViewCell {
         
         cell.artistNameLabel.text = searchResults[indexPath.row].name
-        cell.popularityLabel.text = searchResults[indexPath.row].rating
+        cell.popularityLabel.text = String(searchResults[indexPath.row].rating)
         
         return UITableViewCell()
     }

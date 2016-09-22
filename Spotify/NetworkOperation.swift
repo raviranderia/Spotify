@@ -19,17 +19,17 @@ protocol NetworkOperationProtocol {
 }
 
 class NetworkOperation : NetworkOperationProtocol {
-    private let session: URLSessionProtocol
-    let queryURL : NSURL
+    private let session = URLSession.shared
+    let queryURL : URL
     
-    required init(url : NSURL,session: URLSessionProtocol = URLSession.shared) {
-        self.session = session
+    required init(url : URL) {
+        
         self.queryURL = url
     }
     
     func downloadJSONFromURL(completion : @escaping ([String: AnyObject]?,Error?) -> Void){
-        let request: NSURLRequest = NSURLRequest(url: queryURL as URL)
-        let dataTask = session.dataTaskWithRequest(url: request) { (data, response, error) in
+        let request: URLRequest = URLRequest(url: queryURL)
+        let dataTask = session.dataTask(with: request as URLRequest) { (data, response, error) in
             if let httpResponse = response as? HTTPURLResponse {
                 switch(httpResponse.statusCode) {
                 case 200:
