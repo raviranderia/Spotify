@@ -8,29 +8,65 @@
 
 import UIKit
 
-final class SASearchViewController: UIViewController, UITableViewDelegate, UITableViewDataSource, SASearchViewModelDelegate {
+final class SASearchViewController: UIViewController, UITableViewDelegate, UITableViewDataSource, SASearchViewModelDelegate,UISearchResultsUpdating,UISearchControllerDelegate,UISearchBarDelegate {
     
     @IBOutlet weak var artistResultTableView: UITableView!
     
-    var saSearchViewModel : SASearchViewModel!
+    private var saSearchViewModel : SASearchViewModel!
+    private var resultSearchController : UISearchController!
 
     override func viewDidLoad() {
         super.viewDidLoad()
         saSearchViewModel = SASearchViewModel()
         saSearchViewModel.delegate = self
+        setupSearchController()
     }
     
-    @IBAction func dummySearchAction(_ sender: UIBarButtonItem) {
-        
-        DispatchQueue.global().async {
-            self.saSearchViewModel.startSearch(name: "Muse") { (success) in
-                if success {
-                    DispatchQueue.main.async {
-                        self.artistResultTableView.reloadData()
+    //MARK: UISearchController
+    private func setupSearchController() {
+        resultSearchController = ({
+            let controller = UISearchController(searchResultsController: nil)
+            controller.searchResultsUpdater = self
+            controller.dimsBackgroundDuringPresentation = false
+            controller.searchBar.sizeToFit()
+            controller.searchBar.delegate = self
+            artistResultTableView.tableHeaderView = controller.searchBar
+            return controller
+        })()
+        resultSearchController.delegate = self
+    }
+    
+    func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
+        if let text = (resultSearchController.searchBar.text) {
+            DispatchQueue.global().async {
+                self.saSearchViewModel.startSearch(name: text) { (success) in
+                    if success {
+                        DispatchQueue.main.async {
+                            self.artistResultTableView.reloadSections(NSIndexSet(index: 0) as IndexSet, with: UITableViewRowAnimation.fade)
+                        }
+                    }
+                    else{
+                        print("could not search")
                     }
                 }
-                else{
-                    print("could not search")
+            }
+        }
+    }
+    
+    func updateSearchResults(for searchController: UISearchController) {
+        if let text = (resultSearchController.searchBar.text) {
+            if text != "" {
+                DispatchQueue.global().async {
+                    self.saSearchViewModel.startSearch(name: text) { (success) in
+                        if success {
+                            DispatchQueue.main.async {
+                                self.artistResultTableView.reloadSections(NSIndexSet(index: 0) as IndexSet, with: UITableViewRowAnimation.fade)
+                            }
+                        }
+                        else{
+                            print("could not search")
+                        }
+                    }
                 }
             }
         }
@@ -41,6 +77,7 @@ final class SASearchViewController: UIViewController, UITableViewDelegate, UITab
         artistResultTableView.reloadData()
     }
     
+    //MARK: UITableView
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return saSearchViewModel.searchResults.count
     }
@@ -52,8 +89,18 @@ final class SASearchViewController: UIViewController, UITableViewDelegate, UITab
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         saSearchViewModel.didSelectRowAtIndexPath(indexPath)
+        if resultSearchController.isActive {
+            resultSearchController.dismiss(animated: true) {
+                self.performSegue(withIdentifier: "showArtistDetail", sender: nil)
+            }
+        }
+        else{
+            self.performSegue(withIdentifier: "showArtistDetail", sender: nil)
+        }
+        
     }
 
+    //MARK: Segue 
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         if let destinationVC = segue.destination as? SAArtistViewController {
             destinationVC.selectedArtist = saSearchViewModel.selectedArtist

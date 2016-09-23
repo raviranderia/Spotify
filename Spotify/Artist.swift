@@ -12,15 +12,11 @@ import UIKit
 struct Artist {
     let name : String
     let rating : Int
-    var artistImage : [UIImage]?
     var imageURLs : [URL]?
     
     init(artistDictionary : [String : AnyObject]) {
         
-        imageURLs = [URL]()
-        artistImage = [UIImage]()
-        
-        
+        imageURLs = [URL]()        
         let artistName = artistDictionary["name"] as! String
         self.name = artistName
         
@@ -36,7 +32,6 @@ struct Artist {
             }
         }
         else{
-            artistImage = nil
             imageURLs = nil
         }
         

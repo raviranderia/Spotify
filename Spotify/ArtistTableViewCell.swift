@@ -8,7 +8,7 @@
 
 import UIKit
 
-class ArtistTableViewCell: UITableViewCell {
+final class ArtistTableViewCell: UITableViewCell {
     @IBOutlet weak var artistNameLabel: UILabel!
     @IBOutlet weak var popularityLabel: UILabel!
 

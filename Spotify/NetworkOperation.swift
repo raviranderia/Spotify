@@ -15,12 +15,13 @@ enum NetworkOperationError : Error {
 }
 
 protocol NetworkOperationProtocol {
-      func downloadJSONFromURL(completion : @escaping ([String: AnyObject]?,Error?) -> Void)
+    func downloadJSONFromURL(completion : @escaping ([String: AnyObject]?,Error?) -> Void)
 }
 
 class NetworkOperation : NetworkOperationProtocol {
     private let session = URLSession.shared
     let queryURL : URL
+    var dataTask : URLSessionDataTask?
     
     required init(url : URL) {
         
@@ -29,7 +30,10 @@ class NetworkOperation : NetworkOperationProtocol {
     
     func downloadJSONFromURL(completion : @escaping ([String: AnyObject]?,Error?) -> Void){
         let request: URLRequest = URLRequest(url: queryURL)
-        let dataTask = session.dataTask(with: request as URLRequest) { (data, response, error) in
+        if dataTask?.originalRequest != nil {
+            dataTask?.cancel()
+        }
+        dataTask = session.dataTask(with: request as URLRequest) { (data, response, error) in
             if let httpResponse = response as? HTTPURLResponse {
                 switch(httpResponse.statusCode) {
                 case 200:
@@ -48,7 +52,6 @@ class NetworkOperation : NetworkOperationProtocol {
                 completion(nil,NetworkOperationError.NotValidHTTPResponse)
             }
         }
-        dataTask.resume()
+        dataTask?.resume()
     }
-    
 }

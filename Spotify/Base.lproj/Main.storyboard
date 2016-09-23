@@ -3,11 +3,12 @@
     <dependencies>
         <deployment identifier="iOS"/>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="11161"/>
+        <capability name="Aspect ratio constraints" minToolsVersion="5.1"/>
         <capability name="Constraints to layout margins" minToolsVersion="6.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <scenes>
-        <!--Search View Controller-->
+        <!--SPOTIFY ARTISTS-->
         <scene sceneID="tne-QT-ifu">
             <objects>
                 <viewController id="BYZ-38-t0r" customClass="SASearchViewController" customModule="Spotify" customModuleProvider="target" sceneMemberID="viewController">
@@ -53,7 +54,6 @@
                                         <connections>
                                             <outlet property="artistNameLabel" destination="eib-qL-fCw" id="VlM-UF-uMP"/>
                                             <outlet property="popularityLabel" destination="QSR-Ft-ELJ" id="EOJ-kx-723"/>
-                                            <segue destination="ZuL-mD-k6z" kind="show" id="0Eb-CY-6mY"/>
                                         </connections>
                                     </tableViewCell>
                                 </prototypes>
@@ -71,25 +71,20 @@
                             <constraint firstItem="wfy-db-euE" firstAttribute="top" secondItem="C7J-sX-gbP" secondAttribute="bottom" id="f4F-Ak-cbI"/>
                         </constraints>
                     </view>
-                    <navigationItem key="navigationItem" id="BOb-pL-wUi">
-                        <barButtonItem key="rightBarButtonItem" title="+" id="mLx-9u-ewl">
-                            <connections>
-                                <action selector="dummySearchAction:" destination="BYZ-38-t0r" id="V0Q-Cm-tKt"/>
-                            </connections>
-                        </barButtonItem>
-                    </navigationItem>
+                    <navigationItem key="navigationItem" title="SPOTIFY ARTISTS" id="BOb-pL-wUi"/>
                     <connections>
                         <outlet property="artistResultTableView" destination="C7J-sX-gbP" id="R8k-zo-nX9"/>
+                        <segue destination="ZuL-mD-k6z" kind="show" identifier="showArtistDetail" id="yKN-O0-bae"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="1076" y="137.18140929535232"/>
+            <point key="canvasLocation" x="1154" y="136"/>
         </scene>
         <!--Artist View Controller-->
         <scene sceneID="K6f-ek-jpm">
             <objects>
-                <viewController id="ZuL-mD-k6z" customClass="SAArtistViewController" customModule="Spotify" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController automaticallyAdjustsScrollViewInsets="NO" id="ZuL-mD-k6z" customClass="SAArtistViewController" customModule="Spotify" customModuleProvider="target" sceneMemberID="viewController">
                     <layoutGuides>
                         <viewControllerLayoutGuide type="top" id="WMr-12-ofT"/>
                         <viewControllerLayoutGuide type="bottom" id="yJC-4v-Hkj"/>
@@ -97,12 +92,44 @@
                     <view key="view" contentMode="scaleToFill" id="Avy-yP-JMB">
                         <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <imageView userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="WIL-eH-KCV">
+                                <constraints>
+                                    <constraint firstAttribute="width" secondItem="WIL-eH-KCV" secondAttribute="height" multiplier="1:1" id="5Sv-CF-Jwa"/>
+                                </constraints>
+                            </imageView>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="J4Y-3E-Chg">
+                                <fontDescription key="fontDescription" type="system" pointSize="35"/>
+                                <nil key="textColor"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                            <scrollView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="kg1-NZ-vB2">
+                                <constraints>
+                                    <constraint firstAttribute="width" secondItem="kg1-NZ-vB2" secondAttribute="height" multiplier="15:8" id="h11-Bs-kGl"/>
+                                </constraints>
+                            </scrollView>
+                        </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                        <constraints>
+                            <constraint firstItem="kg1-NZ-vB2" firstAttribute="leading" secondItem="Avy-yP-JMB" secondAttribute="leadingMargin" constant="51" id="E7m-gZ-ryj"/>
+                            <constraint firstItem="J4Y-3E-Chg" firstAttribute="centerX" secondItem="Avy-yP-JMB" secondAttribute="centerX" id="GEV-Ev-KVA"/>
+                            <constraint firstItem="WIL-eH-KCV" firstAttribute="top" secondItem="WMr-12-ofT" secondAttribute="bottom" constant="8" id="UYq-pz-8ah"/>
+                            <constraint firstAttribute="trailing" secondItem="WIL-eH-KCV" secondAttribute="trailing" constant="13" id="jsA-ay-t9X"/>
+                            <constraint firstItem="yJC-4v-Hkj" firstAttribute="top" secondItem="kg1-NZ-vB2" secondAttribute="bottom" constant="44" id="rKV-5D-qDF"/>
+                            <constraint firstItem="WIL-eH-KCV" firstAttribute="leading" secondItem="Avy-yP-JMB" secondAttribute="leading" constant="12" id="s2B-eG-jzV"/>
+                            <constraint firstItem="J4Y-3E-Chg" firstAttribute="top" secondItem="WIL-eH-KCV" secondAttribute="bottom" constant="8" id="w5U-dl-tO6"/>
+                            <constraint firstAttribute="trailingMargin" secondItem="kg1-NZ-vB2" secondAttribute="trailing" constant="52" id="xAu-Bw-q3i"/>
+                        </constraints>
                     </view>
+                    <connections>
+                        <outlet property="artistImage" destination="WIL-eH-KCV" id="Nd4-s7-Gen"/>
+                        <outlet property="artistName" destination="J4Y-3E-Chg" id="agf-94-vSb"/>
+                        <outlet property="scrollView" destination="kg1-NZ-vB2" id="iiV-Jy-Q8t"/>
+                    </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="NHn-zN-RDu" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="1902" y="137"/>
+            <point key="canvasLocation" x="1901.5999999999999" y="136.28185907046478"/>
         </scene>
         <!--Navigation Controller-->
         <scene sceneID="vSV-ZJ-iAw">

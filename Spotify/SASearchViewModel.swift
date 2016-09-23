@@ -13,11 +13,11 @@ protocol SASearchViewModelDelegate : class {
     func didUpdateSearchResults(controller : SASearchViewModel,searchResults : [Artist])
 }
 
-class SASearchViewModel {
+final class SASearchViewModel {
     
-    var requestManager : RequestManager!
+    private var requestManager : RequestManager!
+    private var artistsFound : [Artist]?
     var selectedArtist : Artist?
-    var artistsFound : [Artist]?
     var searchResults : [Artist] {
         if let artistsFound = artistsFound {
             return artistsFound
@@ -27,7 +27,8 @@ class SASearchViewModel {
     
     weak var delegate : SASearchViewModelDelegate?
     
-    func generateURL(name : String,completion : (NSURL?,Error?) -> ()) {
+    //Where should this be? - I put it here because I need a URL for Network Operation..dependency injection for testing
+    private func generateURL(name : String,completion : (NSURL?,Error?) -> ()) {
         let urlString = AppConfig().startURL + name + AppConfig().endURL
         if let returnString = NSURL(string: urlString){
             completion(returnString,nil)
@@ -37,7 +38,10 @@ class SASearchViewModel {
         }
     }
     
+    
+    //MARK: SearchHandling
     func startSearch(name : String,completion : @escaping (Bool) -> ()) {
+        artistsFound = []
         searchArtists(withName: name) { (artistArray, error) in
             if error != nil {
                 completion(false)
@@ -45,7 +49,6 @@ class SASearchViewModel {
                 self.artistsFound = artistArray
                 completion(true)
             }
-            
         }
     }
     
@@ -69,16 +72,19 @@ class SASearchViewModel {
          }
     }
     
+    //MARK: TableViewHandling
     func numberOfRowsInSection(_ section : Int) -> Int{
         return searchResults.count
     }
     
     func cellForRowAtIndexPath(_ cell : ArtistTableViewCell,indexPath : IndexPath) -> UITableViewCell {
         
-        cell.artistNameLabel.text = searchResults[indexPath.row].name
-        cell.popularityLabel.text = String(searchResults[indexPath.row].rating)
+        let artistCellViewModel = ArtistCellViewModel(artist: searchResults[indexPath.row])
         
-        return UITableViewCell()
+        cell.artistNameLabel.text = artistCellViewModel.name
+        cell.popularityLabel.text = artistCellViewModel.rating
+        
+        return cell
     }
     
     func didSelectRowAtIndexPath(_ indexPath : IndexPath) {
