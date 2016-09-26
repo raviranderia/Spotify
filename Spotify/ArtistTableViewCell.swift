@@ -11,6 +11,11 @@ import UIKit
 final class ArtistTableViewCell: UITableViewCell {
     @IBOutlet weak var artistNameLabel: UILabel!
     @IBOutlet weak var popularityLabel: UILabel!
+    
+    func configure(artistCellViewModel : ArtistCellViewModel) {        
+        artistNameLabel.text = artistCellViewModel.name
+        popularityLabel.text = artistCellViewModel.rating
+    }
 
     override func awakeFromNib() {
         super.awakeFromNib()

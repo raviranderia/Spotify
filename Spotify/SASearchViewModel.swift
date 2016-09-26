@@ -9,9 +9,6 @@
 import Foundation
 import UIKit
 
-protocol SASearchViewModelDelegate : class {
-    func didUpdateSearchResults(controller : SASearchViewModel,searchResults : [Artist])
-}
 
 final class SASearchViewModel {
     
@@ -19,22 +16,18 @@ final class SASearchViewModel {
     private var artistsFound : [Artist]?
     var selectedArtist : Artist?
     var searchResults : [Artist] {
-        if let artistsFound = artistsFound {
-            return artistsFound
-        }
-        return []
+        return artistsFound ?? []
     }
-    
-    weak var delegate : SASearchViewModelDelegate?
-    
+        
     //Where should this be? - I put it here because I need a URL for Network Operation..dependency injection for testing
     private func generateURL(name : String,completion : (NSURL?,Error?) -> ()) {
-        let urlString = AppConfig().startURL + name + AppConfig().endURL
-        if let returnString = NSURL(string: urlString){
-            completion(returnString,nil)
-        }
-        else{
-            completion(nil,SpotifyServiceError.CouldNotConstructValidURL)
+        if let urlString = (AppConfig().startURL + name + AppConfig().endURL).addingPercentEncoding(withAllowedCharacters: CharacterSet.urlQueryAllowed) {
+            if let returnString = NSURL(string: urlString){
+                completion(returnString,nil)
+            }
+            else{
+                completion(nil,SpotifyServiceError.CouldNotConstructValidURL)
+            }
         }
     }
     
@@ -42,30 +35,33 @@ final class SASearchViewModel {
     //MARK: SearchHandling
     func startSearch(name : String,completion : @escaping (Bool) -> ()) {
         artistsFound = []
-        searchArtists(withName: name) { (artistArray, error) in
-            if error != nil {
+        
+        searchArtists(withName: name) { (result) in
+            switch result {
+            case .Failure(_) :
                 completion(false)
-            }else {
+            case .Success(let artistArray) :
                 self.artistsFound = artistArray
                 completion(true)
             }
         }
     }
     
-    private func searchArtists(withName : String,completion : @escaping ([Artist]?,Error?) -> ()) {
+    private func searchArtists(withName : String,completion : @escaping (Result<[Artist]>) -> Void){
         generateURL(name: withName) { (url, error) in
-            if error != nil {
-                completion(nil,error)
+            if let errorFound = error {
+                completion(Result.Failure(errorFound))
             }
             if let urlRequest = url {
                 let networkOperation  = NetworkOperation(url: urlRequest as URL)
                 requestManager = RequestManager(networkHelper: networkOperation)
-                requestManager.getArtists() { (artistArray, error) in
-                    if error != nil {
-                        completion(nil,error)
-                    }
-                    else{
-                        completion(artistArray,nil)
+                
+                requestManager.getArtists() { (result) in
+                    switch result {
+                    case .Failure(let error) :
+                        completion(Result.Failure(error))
+                    case .Success(let artistArray) :
+                        completion(Result.Success(artistArray))
                     }
                 }
             }
@@ -77,16 +73,9 @@ final class SASearchViewModel {
         return searchResults.count
     }
     
-    func cellForRowAtIndexPath(_ cell : ArtistTableViewCell,indexPath : IndexPath) -> UITableViewCell {
-        
-        let artistCellViewModel = ArtistCellViewModel(artist: searchResults[indexPath.row])
-        
-        cell.artistNameLabel.text = artistCellViewModel.name
-        cell.popularityLabel.text = artistCellViewModel.rating
-        
-        return cell
+    func viewModel(for indexPath: IndexPath) -> ArtistCellViewModel {
+        return ArtistCellViewModel(artist: searchResults[indexPath.row])
     }
-    
     func didSelectRowAtIndexPath(_ indexPath : IndexPath) {
         selectedArtist = searchResults[indexPath.row]
     }

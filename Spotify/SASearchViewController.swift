@@ -8,7 +8,7 @@
 
 import UIKit
 
-final class SASearchViewController: UIViewController, UITableViewDelegate, UITableViewDataSource, SASearchViewModelDelegate,UISearchResultsUpdating,UISearchControllerDelegate,UISearchBarDelegate {
+final class SASearchViewController: UIViewController, UITableViewDelegate, UITableViewDataSource,UISearchResultsUpdating,UISearchControllerDelegate,UISearchBarDelegate {
     
     @IBOutlet weak var artistResultTableView: UITableView!
     
@@ -18,7 +18,6 @@ final class SASearchViewController: UIViewController, UITableViewDelegate, UITab
     override func viewDidLoad() {
         super.viewDidLoad()
         saSearchViewModel = SASearchViewModel()
-        saSearchViewModel.delegate = self
         setupSearchController()
     }
     
@@ -35,42 +34,34 @@ final class SASearchViewController: UIViewController, UITableViewDelegate, UITab
         })()
         resultSearchController.delegate = self
     }
-    
+
     func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
-        if let text = (resultSearchController.searchBar.text) {
-            DispatchQueue.global().async {
-                self.saSearchViewModel.startSearch(name: text) { (success) in
-                    if success {
-                        DispatchQueue.main.async {
-                            self.artistResultTableView.reloadSections(NSIndexSet(index: 0) as IndexSet, with: UITableViewRowAnimation.fade)
-                        }
-                    }
-                    else{
-                        print("could not search")
-                    }
+        guard let text = (resultSearchController.searchBar.text),text != "" else {return}
+        self.saSearchViewModel.startSearch(name: text) { (success) in
+            if success {
+                DispatchQueue.main.async {
+                    self.artistResultTableView.reloadSections(NSIndexSet(index: 0) as IndexSet, with: UITableViewRowAnimation.fade)
                 }
             }
+            else{
+                print("could not search")
+            }
         }
-    }
+        }
     
     func updateSearchResults(for searchController: UISearchController) {
-        if let text = (resultSearchController.searchBar.text) {
-            if text != "" {
-                DispatchQueue.global().async {
-                    self.saSearchViewModel.startSearch(name: text) { (success) in
-                        if success {
-                            DispatchQueue.main.async {
-                                self.artistResultTableView.reloadSections(NSIndexSet(index: 0) as IndexSet, with: UITableViewRowAnimation.fade)
-                            }
-                        }
-                        else{
-                            print("could not search")
-                        }
-                    }
+        guard let text = (resultSearchController.searchBar.text),text != "" else {return}
+        self.saSearchViewModel.startSearch(name: text) { (success) in
+            if success {
+                DispatchQueue.main.async {
+                    self.artistResultTableView.reloadSections(NSIndexSet(index: 0) as IndexSet, with: UITableViewRowAnimation.fade)
                 }
             }
+            else{
+                print("could not search")
+            }
         }
-    }
+        }
     
     func didUpdateSearchResults(controller: SASearchViewModel, searchResults: [Artist]) {
         print(searchResults)
@@ -84,7 +75,9 @@ final class SASearchViewController: UIViewController, UITableViewDelegate, UITab
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "Cell", for: indexPath) as! ArtistTableViewCell
-        return saSearchViewModel.cellForRowAtIndexPath(cell, indexPath: indexPath)
+        let viewModel = saSearchViewModel.viewModel(for: indexPath)
+        cell.configure(artistCellViewModel: viewModel)
+        return cell
     }
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {

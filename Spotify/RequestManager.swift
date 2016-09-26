@@ -10,7 +10,7 @@ import Foundation
 import UIKit
 
 protocol SpotifyServiceProtocol {
-    func getArtists(completion: @escaping ([Artist]?, Error?) -> (Void))
+    func getArtists(completion: @escaping (Result<[Artist]>) -> Void)
 }
 
 enum SpotifyServiceError : Error {
@@ -27,41 +27,41 @@ struct RequestManager : SpotifyServiceProtocol {
         self.networkOperation = networkHelper
     }
     
-    func getArtists(completion: @escaping ([Artist]?, Error?) -> (Void)) {
-        self.networkOperation.downloadJSONFromURL(completion: { (JSONDictionary,error) in
-            
-            if let jsonDictionary = JSONDictionary {
-                self.convertToArtistModelAndReturnArray(jsonDictionary: jsonDictionary, completion: { (artistModelArray, error) in
-                    if error == nil {
-                        completion(artistModelArray,nil)
+    func getArtists(completion: @escaping (Result<[Artist]>) -> Void) {
+        
+        self.networkOperation.downloadJSONFromURL { (response) in
+            switch response {
+            case .Success(let dict) :
+                self.convertToArtistModelAndReturnArray(jsonDictionary: dict) { result in
+                    switch result {
+                    case .Failure(let error) :
+                        completion(Result.Failure(error))
+                    case .Success(let artistArray) :
+                        completion(Result.Success(artistArray))
                     }
-                    else{
-                        completion(nil,error)
-                    }
-                })
+                }
+            case .Failure(let error) :
+                print(error)
+                completion(Result.Failure(error))
             }
-            else{
-                
-                completion(nil,error)
-            }
-        })
+        }
     }
     
-    private func convertToArtistModelAndReturnArray(jsonDictionary : [String : AnyObject],completion : ([Artist]?,Error?)->()){
+    private func convertToArtistModelAndReturnArray(jsonDictionary : [String : AnyObject],completion : (Result<[Artist]>)->()){
         var artistArray = [Artist]()
         if let artists = jsonDictionary["artists"] as? [String:AnyObject] {
             if let items = artists["items"] as? [[String: AnyObject]] {
                 for artist in items {
                     artistArray.append(Artist(artistDictionary: artist))
                 }
-                completion(artistArray,nil)
+                completion(Result.Success(artistArray))
             }
             else{
-                completion(nil,SpotifyServiceError.CouldNotParseDataProperly)
+                completion(Result.Failure(SpotifyServiceError.CouldNotParseDataProperly))
             }
         }
         else{
-            completion(nil,SpotifyServiceError.CouldNotParseDataProperly)
+            completion(Result.Failure(SpotifyServiceError.CouldNotParseDataProperly))
         }
     }
 }

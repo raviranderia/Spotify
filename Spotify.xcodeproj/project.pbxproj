@@ -20,6 +20,8 @@
 		0D8537371D9455F0006AFC02 /* Artist.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0D8537361D9455F0006AFC02 /* Artist.swift */; };
 		0D8B22DB1D956ECE007A19FA /* AukDistrib.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0D8B22DA1D956ECE007A19FA /* AukDistrib.swift */; };
 		0D8B22DD1D956F05007A19FA /* MoaDistrib.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0D8B22DC1D956F05007A19FA /* MoaDistrib.swift */; };
+		0D8B22E21D95797C007A19FA /* MockURLSession.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0D8B22E01D95797C007A19FA /* MockURLSession.swift */; };
+		0D8B22E31D95797C007A19FA /* MockURLSessionDataTask.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0D8B22E11D95797C007A19FA /* MockURLSessionDataTask.swift */; };
 		0DD9453D1D9473CF00F5B01A /* ArtistCellViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0DD9453C1D9473CF00F5B01A /* ArtistCellViewModel.swift */; };
 		0DD9453F1D947BFC00F5B01A /* ArtistTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0DD9453E1D947BFC00F5B01A /* ArtistTableViewCell.swift */; };
 		0DEDF26A1D945D930059FB8E /* NetworkOperation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0DEDF2691D945D930059FB8E /* NetworkOperation.swift */; };
@@ -57,6 +59,8 @@
 		0D8537361D9455F0006AFC02 /* Artist.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Artist.swift; sourceTree = "<group>"; };
 		0D8B22DA1D956ECE007A19FA /* AukDistrib.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AukDistrib.swift; sourceTree = "<group>"; };
 		0D8B22DC1D956F05007A19FA /* MoaDistrib.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MoaDistrib.swift; sourceTree = "<group>"; };
+		0D8B22E01D95797C007A19FA /* MockURLSession.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MockURLSession.swift; sourceTree = "<group>"; };
+		0D8B22E11D95797C007A19FA /* MockURLSessionDataTask.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MockURLSessionDataTask.swift; sourceTree = "<group>"; };
 		0DD9453C1D9473CF00F5B01A /* ArtistCellViewModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ArtistCellViewModel.swift; sourceTree = "<group>"; };
 		0DD9453E1D947BFC00F5B01A /* ArtistTableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ArtistTableViewCell.swift; sourceTree = "<group>"; };
 		0DEDF2691D945D930059FB8E /* NetworkOperation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NetworkOperation.swift; sourceTree = "<group>"; };
@@ -111,6 +115,7 @@
 		0D8537091D945422006AFC02 /* Spotify */ = {
 			isa = PBXGroup;
 			children = (
+				0D8B22DF1D957968007A19FA /* MockSession */,
 				0D8B22D91D956EBD007A19FA /* SlideShow */,
 				0D8B22D81D9569A0007A19FA /* ArtistModel */,
 				0D8537351D945572006AFC02 /* NetworkManager */,
@@ -195,6 +200,15 @@
 				0DD9453E1D947BFC00F5B01A /* ArtistTableViewCell.swift */,
 			);
 			name = ArtistTableViewCell;
+			sourceTree = "<group>";
+		};
+		0D8B22DF1D957968007A19FA /* MockSession */ = {
+			isa = PBXGroup;
+			children = (
+				0D8B22E01D95797C007A19FA /* MockURLSession.swift */,
+				0D8B22E11D95797C007A19FA /* MockURLSessionDataTask.swift */,
+			);
+			name = MockSession;
 			sourceTree = "<group>";
 		};
 		14CE565671B3445B826FEA96 /* Pods */ = {
@@ -427,7 +441,9 @@
 				0DEDF2711D9464850059FB8E /* AppConfig.swift in Sources */,
 				0DD9453F1D947BFC00F5B01A /* ArtistTableViewCell.swift in Sources */,
 				0D85372D1D9454E7006AFC02 /* SAArtistViewController.swift in Sources */,
+				0D8B22E21D95797C007A19FA /* MockURLSession.swift in Sources */,
 				0D8537371D9455F0006AFC02 /* Artist.swift in Sources */,
+				0D8B22E31D95797C007A19FA /* MockURLSessionDataTask.swift in Sources */,
 				0D85370B1D945422006AFC02 /* AppDelegate.swift in Sources */,
 				0DEDF26A1D945D930059FB8E /* NetworkOperation.swift in Sources */,
 				0D8B22DD1D956F05007A19FA /* MoaDistrib.swift in Sources */,
